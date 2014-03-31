@@ -1,13 +1,13 @@
-# project  configured on Sun Mar 30 21:14:53 2014 by
+# project  configured on Sun Mar 30 21:31:02 2014 by
 # waf 1.7.11 (abi 98, python 20705f0 on linux2)
 # using /home/nies/pebble-dev/PebbleSDK-2.0.2/Pebble/waf configure build
 #
 ----------------------------------------
 Setting top to
-/home/nies/pebble-dev/PebbleSDK-2.0.2/Examples/pebblekit-js/septa
+/home/nies/Documents/Projects/Programming/Pebble-apps/pebble_septa_app
 ----------------------------------------
 Setting out to
-/home/nies/pebble-dev/PebbleSDK-2.0.2/Examples/pebblekit-js/septa/build
+/home/nies/Documents/Projects/Programming/Pebble-apps/pebble_septa_app/build
 ----------------------------------------
 Checking for program gcc,cc
 arm-none-eabi-gcc

@@ -11,7 +11,16 @@ function fetchTime(latitude, longitude) {
     if (req2.readyState == 4) {
       if(req2.status == 200) {
         response = JSON.parse(req2.responseText);
-        console.log(response['48'][0]['date'])
+        var keys = [];
+        for(var key in response)
+        {
+            if(response.hasOwnProperty(key))
+            {
+                keys.push(key);
+            }
+        }
+        console.log(response[keys[0]][0]['date'])
+        console.log(response[keys[0]][0]['Route'])
         var next_bus;
         if (response && response.length > 0) {
           var stopResult = response[0];

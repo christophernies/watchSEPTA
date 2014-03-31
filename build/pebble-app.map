@@ -761,7 +761,7 @@ DISCARD
  libm.a(*)
  libgcc.a(*)
  *(.eh_frame)
-OUTPUT(/home/nies/pebble-dev/PebbleSDK-2.0.2/Examples/pebblekit-js/septa/build/pebble-app.elf elf32-littlearm)
+OUTPUT(/home/nies/Documents/Projects/Programming/Pebble-apps/pebble_septa_app/build/pebble-app.elf elf32-littlearm)
 
 .ARM.attributes
                 0x0000000000000000       0x27
@@ -807,15 +807,15 @@ OUTPUT(/home/nies/pebble-dev/PebbleSDK-2.0.2/Examples/pebblekit-js/septa/build/p
 .debug_ranges   0x0000000000000000       0x60
  .debug_ranges  0x0000000000000000       0x60 src/weather.c.11.o
 
-.debug_line     0x0000000000000000      0x303
- .debug_line    0x0000000000000000      0x1fb src/weather.c.11.o
- .debug_line    0x00000000000001fb      0x108 appinfo.auto.c.11.o
+.debug_line     0x0000000000000000      0x308
+ .debug_line    0x0000000000000000      0x200 src/weather.c.11.o
+ .debug_line    0x0000000000000200      0x108 appinfo.auto.c.11.o
 
-.debug_str      0x0000000000000000      0xae0
- .debug_str     0x0000000000000000      0x98a src/weather.c.11.o
-                                        0xa48 (size before relaxing)
- .debug_str     0x000000000000098a      0x156 appinfo.auto.c.11.o
-                                        0x2f4 (size before relaxing)
+.debug_str      0x0000000000000000      0xae5
+ .debug_str     0x0000000000000000      0x98f src/weather.c.11.o
+                                        0xa4d (size before relaxing)
+ .debug_str     0x000000000000098f      0x156 appinfo.auto.c.11.o
+                                        0x2f9 (size before relaxing)
 
 .debug_frame    0x0000000000000000       0xa0
  .debug_frame   0x0000000000000000       0xa0 src/weather.c.11.o
