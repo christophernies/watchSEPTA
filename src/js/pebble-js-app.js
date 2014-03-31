@@ -25,7 +25,7 @@ function fetchTime(latitude, longitude) {
         if (response && response.length > 0) {
           var stopResult = response[0];
           next_bus = stopResult.Route;
-          console.log(next_bus);
+          console.log("nextbus:" + next_bus);
           Pebble.sendAppMessage({
             "next_bus":next_bus});
         }
@@ -44,6 +44,7 @@ function fetchStop(latitude, longitude) {
   var req = new XMLHttpRequest();
   req.open('GET', "http://www3.septa.org/hackathon/locations/get_locations.php?" +
     "lat=" + latitude + "&lon=" + longitude + "&radius=.5", true);
+  data = {}
   req.onload = function(e) {
     if (req.readyState == 4) {
       if(req.status == 200) {
@@ -58,6 +59,9 @@ function fetchStop(latitude, longitude) {
           console.log(stopname);
           console.log(stopaddress);
           console.log(stop_id);
+          data['stopname'] = stopname;
+          data['stopaddress'] = stopaddress;
+          data['stop_id'] = stop_id;
           
           Pebble.sendAppMessage({
             "icon":icon,

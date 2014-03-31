@@ -1,8 +1,8 @@
 {
   "uuid": "74460383-8a0f-4bb6-971f-8937c2ed4441",
-  "shortName": "PebbleJS Weather",
-  "longName": "PebbleJS Weather",
-  "companyName": "Pebble Technology",
+  "shortName": "watchSEPTA",
+  "longName": "watchSEPTA",
+  "companyName": "Christopher Nies",
   "versionCode": 2,
   "versionLabel": "2.0.0",
   "watchapp": {
