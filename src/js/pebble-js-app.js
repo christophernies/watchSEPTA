@@ -3,9 +3,11 @@ function iconFromWeatherId(weatherId) {
   return 0;
 }
 
-function fetchTime(latitude, longitude) {
+function fetchTime(latitude, longitude, transit_data) {
   var response;
-  var stop_id = 5372;
+  var icon = 0;
+  console.log("transit_data: " + JSON.stringify(transit_data));
+  var stop_id = transit_data['stop_id'];
   var req2 = new XMLHttpRequest();
   req2.onload = function(e) {
     if (req2.readyState == 4) {
@@ -19,16 +21,21 @@ function fetchTime(latitude, longitude) {
                 keys.push(key);
             }
         }
-        console.log(response[keys[0]][0]['date'])
-        console.log(response[keys[0]][0]['Route'])
+        console.log("date: " + response[keys[0]][0]['date'])
+        console.log("route: " + response[keys[0]][0]['Route'])
         var next_bus;
-        if (response && response.length > 0) {
-          var stopResult = response[0];
-          next_bus = stopResult.Route;
-          console.log("nextbus:" + next_bus);
-          Pebble.sendAppMessage({
-            "next_bus":next_bus});
-        }
+        stopname = transit_data['stopname'];
+        stopaddress = transit_data['stopaddress'];
+        var stopResult = response[keys[0]][0];
+        next_bus = stopResult.Route;
+        time = stopResult.date;
+        console.log("time: " + time);
+        
+        Pebble.sendAppMessage({
+          "next_bus":next_bus,
+          "stopname":stopname,
+          "time":time,
+          "stopaddress":stopaddress});
 
       } else {
         console.log("Error");
@@ -39,7 +46,11 @@ function fetchTime(latitude, longitude) {
   req2.send();
 }
 
-function fetchStop(latitude, longitude) {
+function getData(latitude, longitude, data) {
+  fetchTime(latitude, longitude, data);
+}
+
+function fetchStop(latitude, longitude, callback) {
   var response;
   var req = new XMLHttpRequest();
   req.open('GET', "http://www3.septa.org/hackathon/locations/get_locations.php?" +
@@ -62,11 +73,7 @@ function fetchStop(latitude, longitude) {
           data['stopname'] = stopname;
           data['stopaddress'] = stopaddress;
           data['stop_id'] = stop_id;
-          
-          Pebble.sendAppMessage({
-            "icon":icon,
-            "stopname":stopname,
-            "stopaddres":stopaddress});
+          callback(latitude, longitude, data);
         }
 
       } else {
@@ -79,8 +86,7 @@ function fetchStop(latitude, longitude) {
 
 function locationSuccess(pos) {
   var coordinates = pos.coords;
-  fetchStop(coordinates.latitude, coordinates.longitude);
-  fetchTime(coordinates.latitude, coordinates.longitude);
+  fetchStop(coordinates.latitude, coordinates.longitude, getData);
 }
 
 function locationError(err) {

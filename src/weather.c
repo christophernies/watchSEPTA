@@ -5,15 +5,18 @@ static Window *window;
 static TextLayer *temperature_layer;
 static TextLayer *city_layer;
 static BitmapLayer *icon_layer;
+static TextLayer *time_layer;
+static TextLayer *next_bus_layer;
 static GBitmap *icon_bitmap = NULL;
 
 static AppSync sync;
-static uint8_t sync_buffer[64];
+static uint8_t sync_buffer[128];
 
 enum WeatherKey {
-  WEATHER_ICON_KEY = 0x0,         // TUPLE_INT
+  NEXT_BUS_KEY = 0x0,         // TUPLE_INT
   WEATHER_TEMPERATURE_KEY = 0x1,  // TUPLE_CSTRING
   WEATHER_CITY_KEY = 0x2,         // TUPLE_CSTRING
+  TIME_KEY = 0x3,         // TUPLE_CSTRING
 };
 
 static const uint32_t WEATHER_ICONS[] = {
@@ -29,13 +32,15 @@ static void sync_error_callback(DictionaryResult dict_error, AppMessageResult ap
 
 static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tuple, const Tuple* old_tuple, void* context) {
   switch (key) {
-    case WEATHER_ICON_KEY:
-      if (icon_bitmap) {
-        gbitmap_destroy(icon_bitmap);
-      }
-      icon_bitmap = gbitmap_create_with_resource(WEATHER_ICONS[new_tuple->value->uint8]);
-      //bitmap_layer_set_bitmap(icon_layer, icon_bitmap);
+    case NEXT_BUS_KEY:
+      text_layer_set_text(next_bus_layer, new_tuple->value->cstring);
       break;
+      // if (icon_bitmap) {
+      //   gbitmap_destroy(icon_bitmap);
+      // }
+      // icon_bitmap = gbitmap_create_with_resource(WEATHER_ICONS[new_tuple->value->uint8]);
+      // //bitmap_layer_set_bitmap(icon_layer, icon_bitmap);
+      // break;
 
     case WEATHER_TEMPERATURE_KEY:
       // App Sync keeps new_tuple in sync_buffer, so we may use it directly
@@ -44,6 +49,10 @@ static void sync_tuple_changed_callback(const uint32_t key, const Tuple* new_tup
 
     case WEATHER_CITY_KEY:
       text_layer_set_text(city_layer, new_tuple->value->cstring);
+      break;
+
+    case TIME_KEY:
+      text_layer_set_text(time_layer, new_tuple->value->cstring);
       break;
   }
 }
@@ -77,17 +86,32 @@ static void window_load(Window *window) {
   text_layer_set_text_alignment(temperature_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(temperature_layer));
 
-  city_layer = text_layer_create(GRect(0, 40, 144, 68));
+  next_bus_layer = text_layer_create(GRect(0, 10, 144, 68));
+  text_layer_set_text_color(next_bus_layer, GColorWhite);
+  text_layer_set_background_color(next_bus_layer, GColorClear);
+  text_layer_set_font(next_bus_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
+  text_layer_set_text_alignment(next_bus_layer, GTextAlignmentCenter);
+  layer_add_child(window_layer, text_layer_get_layer(next_bus_layer));
+
+  city_layer = text_layer_create(GRect(0, 70, 144, 68));
   text_layer_set_text_color(city_layer, GColorWhite);
   text_layer_set_background_color(city_layer, GColorClear);
   text_layer_set_font(city_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
   text_layer_set_text_alignment(city_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(city_layer));
 
+  time_layer = text_layer_create(GRect(0, 40, 144, 68));
+  text_layer_set_text_color(time_layer, GColorWhite);
+  text_layer_set_background_color(time_layer, GColorClear);
+  text_layer_set_font(time_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
+  text_layer_set_text_alignment(time_layer, GTextAlignmentCenter);
+  layer_add_child(window_layer, text_layer_get_layer(time_layer));
+
   Tuplet initial_values[] = {
-    TupletInteger(WEATHER_ICON_KEY, (uint8_t) 1),
+    TupletInteger(NEXT_BUS_KEY, (uint8_t) 1),
     //TupletCString(WEATHER_TEMPERATURE_KEY, "1234\u00B0C"),
     TupletCString(WEATHER_CITY_KEY, ""),
+    TupletCString(TIME_KEY, ""),
   };
 
   app_sync_init(&sync, sync_buffer, sizeof(sync_buffer), initial_values, ARRAY_LENGTH(initial_values),
@@ -105,6 +129,7 @@ static void window_unload(Window *window) {
 
   text_layer_destroy(city_layer);
   text_layer_destroy(temperature_layer);
+  text_layer_destroy(time_layer);
   //bitmap_layer_destroy(icon_layer);
 }
 
@@ -117,8 +142,8 @@ static void init(void) {
     .unload = window_unload
   });
 
-  const int inbound_size = 64;
-  const int outbound_size = 64;
+  const int inbound_size = 128;
+  const int outbound_size = 128;
   app_message_open(inbound_size, outbound_size);
 
   const bool animated = true;

@@ -9,9 +9,10 @@
     "watchface": false
   },
   "appKeys": {
-    "icon": 0,
+    "next_bus": 0,
     "stopname": 2,
-    "stopaddress": 1
+    "stopaddress": 1,
+    "time": 3
   },
   "resources": {
     "media": [
